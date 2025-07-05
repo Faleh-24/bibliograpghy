@@ -3,5 +3,6 @@
 
 int main(void) {
     readBiblioGraphyData();
+    getUserMenu();
     return 0;
 }

@@ -21,5 +21,8 @@ typedef struct
 //functions
 void extractField(const char* line, char* output);
 void readBiblioGraphyData();
+void getUserMenu();
+void checkEntry(int userEntry);
+void searchByTitle(char * chosenTitle);
 
 #endif //FALEH_BIBLIOGRAPHY_H
