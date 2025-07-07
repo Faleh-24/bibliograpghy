@@ -6,12 +6,12 @@
 #define FALEH_BIBLIOGRAPHY_H
 
 #define limit 100
-#define len 500
+#define LEN 500
 typedef struct
 {
-    char material_type[len];
-    char material_title[len];
-    char material_author[len];
+    char material_type[LEN];
+    char material_title[LEN];
+    char material_author[LEN];
     int material_year;
 }Data;
 
@@ -19,10 +19,10 @@ typedef struct
 
 
 //functions
-void extractField(const char* line, char* output);
-void readBiblioGraphyData();
+int readBiblioGraphyData( );
 void getUserMenu();
 void checkEntry(int userEntry);
 void searchByTitle(char * chosenTitle);
+void searchByAuthor(char * chosenAuthor);
 
 #endif //FALEH_BIBLIOGRAPHY_H

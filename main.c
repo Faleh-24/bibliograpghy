@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include <string.h>
 #include "bibliography.h"
 
 int main(void) {
-    readBiblioGraphyData();
+
+
+    int count = readBiblioGraphyData();
     getUserMenu();
+
     return 0;
 }

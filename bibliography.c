@@ -6,52 +6,81 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 Data biblio [limit];
 int count;
-void extractField(const char* line, char* output) {
-    const char* open = strchr(line, '{');
-    const char* close = strrchr(line, '}');
 
-    if (open && close && close > open) {
-        int length = close - open - 1;
-        strncpy(output, open + 1, length);
-        output[length] = '\0';
-    } else {
-        strcpy(output, "");
-    }
+int starts_with(const char *line, const char *prefix) {
+    return strncmp(line, prefix, strlen(prefix)) == 0;
 }
-void readBiblioGraphyData() {
-    FILE* file = fopen("bibliography.txt", "r");
-    if (!file) {
 
+void trim(char *str) {
+    // Remove leading and trailing whitespace
+    char *end;
+    while (isspace((unsigned char)*str)) str++;
+    end = str + strlen(str) - 1;
+    while (end > str && (isspace((unsigned char)*end) || *end == '}')) end--;
+    *(end + 1) = '\0';
+}
+
+void extract_value(const char *line, char *dest, size_t size) {
+    const char *start = strchr(line, '{');
+    if (!start) {
+        dest[0] = '\0';
+        return;
+    }
+    start++;  // Move past '{'
+    const char *end = strchr(start, '}');
+    if (!end) end = start + strlen(start);  // In case of missing '}'
+
+    size_t len = end - start;
+    if (len >= size) len = size - 1;
+    strncpy(dest, start, len);
+    dest[len] = '\0';
+}
+
+
+int extract_year(const char *line) {
+    char temp[LEN];
+    extract_value(line, temp, LEN);
+    return (int)strtol(temp, NULL, 10);
+}
+
+int readBiblioGraphyData( ) {
+    FILE *file = fopen("bibliography.txt", "r");
+    if (!file) {
+        perror("File open failed");
+        return 0;
     }
 
-    char line[len];
-    char value[len];
-    int stage = 0;
+    char line[limit];
+    int i = -1;
 
     while (fgets(line, sizeof(line), file)) {
-        if (stage == 0) {
-            extractField(line, value);
-            strcpy(biblio[count].material_title, value);
-        } else if (stage == 1) {
-            extractField(line, value);
-            strcpy(biblio[count].material_author, value);
-        } else if (stage == 2) {
-            extractField(line, value);
-            biblio[count].material_year = atoi(value);
-        } else if (stage == 3) {
-            extractField(line, value);
-            strcpy(biblio[count].material_type, value);
-            count++;
-        }
+        // Remove leading whitespace
+        char *trimmed = line;
+        while (isspace(*trimmed)) trimmed++;
 
-        stage = (stage + 1) % 4;
+        if (trimmed[0] == '@') {
+            i++;
+            if (i >= limit) break;
+            sscanf(trimmed, "@%[^'{']", biblio[i].material_type);
+            biblio[i].material_author[0] = '\0';
+            biblio[i].material_title[0] = '\0';
+            biblio[i].material_year = 0;
+        } else if (strncmp(trimmed, "author", 6) == 0) {
+            extract_value(trimmed, biblio[i].material_author, LEN);
+        } else if (strncmp(trimmed, "title", 5) == 0) {
+            extract_value(trimmed, biblio[i].material_title, LEN);
+        } else if (strncmp(trimmed, "year", 4) == 0) {
+            biblio[i].material_year = extract_year(trimmed);
+        }
     }
 
     fclose(file);
-    printf("file read succesfully .\n" );
+    count = i + 1;
+    return count;
 }
 
 void getUserMenu()
@@ -83,37 +112,75 @@ void getUserMenu()
 
 }
 
-void checkEntry(int userEntry)
-{
+void checkEntry(int userEntry) {
     switch (userEntry) {
         case 1:
-            char userentry[len];
-            printf("Enter the required title");
-            scanf("%s",userentry);
+            char userentry[LEN];
+            printf("Enter the required title \n");
+            fgetchar();
+            scanf("%[^\n]", userentry);
             searchByTitle(userentry);
-        break;
-        case 2: printf("Search by author pressed /n");
-        break;
-        case 3: printf("Search by title /n");
             break;
-        case 4: printf("Search by title /n");
+        case 2:
+
+            printf("Search by required author \n");
+            fgetchar();
+            scanf("%[^\n]", userentry);
+            searchByAuthor(userentry);
             break;
-        case 5: printf("Search by title /n");
+        case 3:
+            printf("Search by title /n");
             break;
-        case 6: printf("Search by title /n");
+        case 4:
+            printf("Search by title /n");
             break;
-        case 7: printf("Search by title /n");
+        case 5:
+            printf("Search by title /n");
             break;
-        case 8: printf("Search by title /n");
+        case 6:
+            printf("Search by title /n");
             break;
-        case 9: printf("Search by title /n");
+        case 7:
+            printf("Search by title /n");
             break;
-        case 10: printf("Search by title /n");
+        case 8:
+            printf("Search by title /n");
             break;
+        case 9:
+            printf("Search by title /n");
+            break;
+        case 10:
+            printf("Search by title /n");
+            break;
+    }
+
+}
+void searchByTitle(char * chosenTitle)
+{
+
+    for(int i=0 ; i < count ; i++ )
+    {
+        if(strstr (biblio[i].material_title ,chosenTitle  )  )
+        {
+            printf("Title : %s , Author : %s , Type : %s , Year : %d ",
+                   biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type ,biblio[i].material_year);
+        }
+
     }
 }
 
-void searchByTitle(char * chosenTitle)
+
+void searchByAuthor(char * chosenAuthor)
 {
-    printf("You are searching for : %s" ,chosenTitle);
+    for(int i=0 ; i < count ; i++ )
+    {
+        if(strstr (biblio[i].material_author ,chosenAuthor  )  )
+        {
+            printf("Title : %s , Author : %s , Type : %s , Year : %d ",
+                   biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type ,biblio[i].material_year);
+        }
+
+    }
 }
+
+
