@@ -23,6 +23,9 @@ int readBiblioGraphyData( );
 void getUserMenu();
 void checkEntry(int userEntry);
 void searchByTitle(char * chosenTitle);
+void searchByYear(int year);
 void searchByAuthor(char * chosenAuthor);
-
+void searchByRangeYear(int year1,int year2);
+void get_entery_type();
+void detect_duplication();
 #endif //FALEH_BIBLIOGRAPHY_H

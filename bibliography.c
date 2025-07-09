@@ -123,25 +123,35 @@ void checkEntry(int userEntry) {
             break;
         case 2:
 
-            printf("Search by required author \n");
+            printf("Enter the required author \n");
             fgetchar();
             scanf("%[^\n]", userentry);
             searchByAuthor(userentry);
             break;
         case 3:
-            printf("Search by title /n");
+            int year;
+            printf("Enter the required year \n");
+            scanf("%d",&year);
+            searchByYear(year);
+
             break;
         case 4:
-            printf("Search by title /n");
+            int year1;
+            int year2;
+            printf("Enter year1 \n");
+            scanf("%d",&year1);
+            printf("Enter year2 \n");
+            scanf("%d",&year2);
+            searchByRangeYear(year1,year2);
             break;
         case 5:
-            printf("Search by title /n");
+            get_entery_type();
             break;
         case 6:
             printf("Search by title /n");
             break;
         case 7:
-            printf("Search by title /n");
+            detect_duplication();
             break;
         case 8:
             printf("Search by title /n");
@@ -184,3 +194,88 @@ void searchByAuthor(char * chosenAuthor)
 }
 
 
+void searchByYear(int year)
+{
+    for(int i=0 ; i < count ; i++ )
+    {
+        if(biblio[i].material_year == year    )
+        {
+            printf("Title : %s , Author : %s , Type : %s , Year : %d "
+                   ,
+                   biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type ,biblio[i].material_year);
+        }
+
+    }
+}
+void searchByRangeYear(int year1,int year2)
+{
+    for(int i=0 ; i < count ; i++ )
+    {
+        if(biblio[i].material_year >= year1 && biblio[i].material_year <= year2  )
+        {
+            printf("Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                   biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type ,biblio[i].material_year);
+        }
+
+    }
+
+
+
+
+}
+
+void get_entery_type()
+{
+    int inproceedings_count=0;
+    int article_count=0;
+    int misc_count=0;
+    int techreport_count=0;
+    for ( int i=0 ; i < count ; i++)
+    {
+       if ( strstr (biblio[i].material_type ,"inproceedings") )
+       {
+           inproceedings_count++;
+       }
+       else if ( strstr (biblio[i].material_type ,"article") )
+       {
+           article_count++;
+       }
+       else if ( strstr (biblio[i].material_type ,"misc") )
+       {
+           misc_count++;
+       }
+       else if ( strstr (biblio[i].material_type ,"techReport") )
+       {
+           techreport_count++;
+       }
+
+    }
+    printf("Inproceedings : %d \n ",inproceedings_count);
+    printf("Articles : %d \n ",article_count);
+    printf("TechReport : %d \n ",techreport_count);
+    printf("Misc : %d \n ",misc_count);
+
+
+}
+
+void detect_duplication()
+{
+    for ( int i=0 ; i <count-1 ; i++)
+    {
+
+        for (int j = i+1 ; j < count ; j++)
+        {
+            if (strstr(biblio[i].material_type , biblio[j].material_type ) &&
+                    strstr(biblio[i].material_title , biblio[j].material_title ) &&
+                            strstr(biblio[i].material_author , biblio[j].material_author) &&
+                            biblio[i].material_year==biblio[j].material_year
+                            )
+            {
+
+                printf("DUPLICATION FOUND \n Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                       biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type ,biblio[i].material_year);
+            }
+        }
+    }
+
+}
