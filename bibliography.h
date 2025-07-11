@@ -28,4 +28,6 @@ void searchByAuthor(char * chosenAuthor);
 void searchByRangeYear(int year1,int year2);
 void get_entery_type();
 void detect_duplication();
+void get_missing_info_from_entry();
+void add_bibliography(char *type , char *title , char * author , int year);
 #endif //FALEH_BIBLIOGRAPHY_H

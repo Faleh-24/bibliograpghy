@@ -148,19 +148,35 @@ void checkEntry(int userEntry) {
             get_entery_type();
             break;
         case 6:
-            printf("Search by title /n");
+            printf("sort author /n");
             break;
         case 7:
             detect_duplication();
             break;
         case 8:
-            printf("Search by title /n");
+            printf("ref /n");
             break;
         case 9:
-            printf("Search by title /n");
+            get_missing_info_from_entry();
             break;
         case 10:
-            printf("Search by title /n");
+            char typechoice [LEN];
+            char authorchoice [LEN];
+            char titlechoice [LEN];
+            int yearchoice;
+            printf("Enter type (inproceedings or techReport or article or  misc  \n");
+            fgetchar();
+            scanf("%[^\n]", typechoice);
+            printf("Enter Author name \n");
+            fgetchar();
+            scanf("%[^\n]", authorchoice);
+            printf("Enter Title of entry  \n");
+            fgetchar();
+            scanf("%[^\n]", titlechoice);
+            printf("Enter year of enrty (0 if there is no year) ");
+            scanf("%d",&yearchoice);
+
+            add_bibliography(typechoice , titlechoice , authorchoice , yearchoice);
             break;
     }
 
@@ -277,5 +293,57 @@ void detect_duplication()
             }
         }
     }
+
+}
+
+void get_missing_info_from_entry()
+{
+  for(int i = 0 ; i < count ; i++)
+  {
+      if ( biblio[i].material_year <=0 )
+      {
+          printf("Missing year info for this entry : \n");
+          printf("Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                 biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type,biblio[i].material_year);
+      }
+      if ( biblio[i].material_author[0] == '\0' )
+      {
+          printf("Missing author info for this entry : \n");
+          printf("Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                 biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type,biblio[i].material_year);
+      }
+      if ( biblio[i].material_title[0] == '\0' )
+      {
+          printf("Missing title info for this entry : \n");
+          printf("Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                 biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type,biblio[i].material_year);
+      }
+      if ( biblio[i].material_type[0] == '\0' )
+      {
+          printf("Missing type info for this entry : \n");
+          printf("Title : %s , Author : %s , Type : %s , Year : %d \n\n",
+                 biblio[i].material_title ,biblio[i].material_author ,biblio[i].material_type,biblio[i].material_year);
+      }
+
+  }
+
+
+}
+
+void add_bibliography(char *type , char *title , char * author , int year)
+{
+    FILE *file = fopen("bibliography.txt", "a");
+    if (!file) {
+        perror("File open failed file is not exist");
+        return ;
+    }
+
+    fprintf(file , "@%s{,\n",type);
+    fprintf(file , "author = {%s},\n",author);
+    fprintf(file , "title = {%s},\n",title);
+    fprintf(file , "year = {%d}\n",year);
+    fprintf(file , "}\n\n");
+
+    printf("file updated successfully \n");
 
 }
