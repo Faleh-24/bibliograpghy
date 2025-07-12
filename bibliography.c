@@ -148,16 +148,16 @@ void checkEntry(int userEntry) {
             get_entery_type();
             break;
         case 6:
-            printf("sort author /n");
+            sort_Authors();
             break;
         case 7:
             detect_duplication();
             break;
         case 8:
-            printf("ref /n");
+            get_missing_info_from_entry();
             break;
         case 9:
-            get_missing_info_from_entry();
+            show_uwe_harvard_style();
             break;
         case 10:
             char typechoice [LEN];
@@ -346,4 +346,43 @@ void add_bibliography(char *type , char *title , char * author , int year)
 
     printf("file updated successfully \n");
 
+}
+
+void show_uwe_harvard_style()
+{
+    int userentry;
+    for(int i = 0 ; i < count ; i++)
+    {
+        printf("%d- %s \n",i,biblio[i].material_title);
+    }
+    printf("choose which title for you Harvard reference \n");
+    scanf("%d",&userentry );
+    if(userentry < 0 || userentry >=count)
+    {
+        printf("you have entered wrong number \n");
+
+    }
+    else
+    {
+        printf("\n %s. (%d) %s.\n",biblio[userentry].material_author,biblio[userentry].material_year,biblio[userentry].material_title);
+
+    }
+
+}
+void sort_Authors()
+{
+    char tempAuthor[LEN];
+    strcpy(tempAuthor,biblio[0].material_author);
+ for ( int i=0 ; i < count ; i++)
+ {
+     for ( int j=0 ; j < count ; j++)
+
+     {
+         if ( strcmp (biblio[i].material_author,tempAuthor ) < 0  )
+         {
+             strcpy(tempAuthor,biblio[i].material_author);
+         }
+     }
+
+ }
 }
