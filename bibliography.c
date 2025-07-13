@@ -11,19 +11,6 @@
 Data biblio [limit];
 int count;
 
-int starts_with(const char *line, const char *prefix) {
-    return strncmp(line, prefix, strlen(prefix)) == 0;
-}
-
-void trim(char *str) {
-    // Remove leading and trailing whitespace
-    char *end;
-    while (isspace((unsigned char)*str)) str++;
-    end = str + strlen(str) - 1;
-    while (end > str && (isspace((unsigned char)*end) || *end == '}')) end--;
-    *(end + 1) = '\0';
-}
-
 void extract_value(const char *line, char *dest, size_t size) {
     const char *start = strchr(line, '{');
     if (!start) {
@@ -58,7 +45,6 @@ int readBiblioGraphyData( ) {
     int i = -1;
 
     while (fgets(line, sizeof(line), file)) {
-        // Remove leading whitespace
         char *trimmed = line;
         while (isspace(*trimmed)) trimmed++;
 
@@ -86,7 +72,7 @@ int readBiblioGraphyData( ) {
 void getUserMenu()
 {
     int userentry;
-
+    printf("\n");
     printf("1- Search by title \n");
     printf("2- Search by Author \n");
     printf("3- Search by year \n");
@@ -337,13 +323,12 @@ void add_bibliography(char *type , char *title , char * author , int year)
         perror("File open failed file is not exist");
         return ;
     }
-
     fprintf(file , "@%s{,\n",type);
     fprintf(file , "author = {%s},\n",author);
     fprintf(file , "title = {%s},\n",title);
     fprintf(file , "year = {%d}\n",year);
     fprintf(file , "}\n\n");
-
+    fclose(file);
     printf("file updated successfully \n");
 
 }
@@ -369,20 +354,26 @@ void show_uwe_harvard_style()
     }
 
 }
-void sort_Authors()
-{
-    char tempAuthor[LEN];
-    strcpy(tempAuthor,biblio[0].material_author);
- for ( int i=0 ; i < count ; i++)
- {
-     for ( int j=0 ; j < count ; j++)
+void sort_Authors() {
+    Data copy [100];
+    Data temp;
 
-     {
-         if ( strcmp (biblio[i].material_author,tempAuthor ) < 0  )
-         {
-             strcpy(tempAuthor,biblio[i].material_author);
-         }
-     }
+    for (int i = 0; i < count; i++) {
+        copy[i] = biblio[i];
+    }
 
- }
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (strcmp(copy[j].material_author, copy[j + 1].material_author) > 0) {
+                temp = copy[j];
+                copy[j] = copy[j + 1];
+                copy[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("Sorted Authors:\n");
+    for (int i = 0; i < count; i++) {
+        printf("%s\n", copy[i].material_author);
+    }
 }

@@ -5,8 +5,14 @@
 int main(void) {
 
 
+    int runnung=1;
     int count = readBiblioGraphyData();
-    getUserMenu();
+    while (runnung ==1)
+    {
+
+        getUserMenu();
+
+    }
 
     return 0;
 }
